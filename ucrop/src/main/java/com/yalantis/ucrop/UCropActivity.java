@@ -25,6 +25,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.DisplayCutoutCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.transition.AutoTransition;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
+
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
@@ -41,20 +57,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.transition.AutoTransition;
-import androidx.transition.Transition;
-import androidx.transition.TransitionManager;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -131,6 +133,22 @@ public class UCropActivity extends AppCompatActivity {
         setImageData(intent);
         setInitialState();
         addBlockingView();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+
+        // add margin if notch is present
+        final DisplayCutoutCompat cutout = WindowInsetsCompat.toWindowInsetsCompat(getWindow().getDecorView().getRootWindowInsets()).getDisplayCutout();
+        int closeMarginTop = cutout.getSafeInsetTop();
+
+        ViewGroup root = findViewById(R.id.ucrop_photobox);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
+        params.topMargin = closeMarginTop;
+        root.setLayoutParams(params);
     }
 
     @Override

@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.yalantis.ucrop.sample"
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
         applicationId "com.yalantis.ucrop.sample"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 13
         versionName "1.2.4"
     }

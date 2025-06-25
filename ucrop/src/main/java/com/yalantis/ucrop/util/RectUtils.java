@@ -2,6 +2,9 @@ package com.yalantis.ucrop.util;
 
 import android.graphics.RectF;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class RectUtils {
 
     /**
