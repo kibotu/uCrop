@@ -94,6 +94,10 @@ Currently, you can change:
 
 # Changelog
 
+### Version: 2.2.10
+
+*   Fixed [#926](https://github.com/Yalantis/uCrop/issues/926)
+
 ### Version: 2.2.9
 
 *   Update compileSdk and targetSdk versions up to 33
@@ -208,6 +212,9 @@ We’d be really happy if you sent us links to your projects where you use our c
 ## License
 
     Copyright 2017, Yalantis
+
+    Software doesn't collect, store or transfer data to Yalantis or third parties.
+    Emplacement of this Software is carried out locally at device.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
