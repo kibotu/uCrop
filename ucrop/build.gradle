@@ -9,7 +9,6 @@ android {
         targetSdkVersion 35
 
         vectorDrawables.useSupportLibrary = true
-        consumerProguardFiles 'consumer-rules.pro'
     }
     buildTypes {
         debug {
@@ -37,9 +36,6 @@ android {
 
     // endregion
 
-
-    resourcePrefix 'ucrop_'
-
     sourceSets.main {
         jni.srcDirs = []
     }
@@ -50,13 +46,15 @@ android {
     lint {
         abortOnError false
     }
+
+    resourcePrefix 'ucrop_'
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:${androidx_appcompat_version}"
-    implementation "androidx.exifinterface:exifinterface:${androidx_exifinterface_version}"
-    implementation "androidx.transition:transition:${androidx_transition_version}"
-    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "androidx.appcompat:appcompat:1.7.1"
+    implementation "androidx.exifinterface:exifinterface:1.4.1"
+    implementation "androidx.transition:transition:1.6.0"
+    implementation "com.squareup.okhttp3:okhttp:5.1.0"
 }
 
 afterEvaluate {

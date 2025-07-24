@@ -84,7 +84,10 @@ public class CropImageView extends TransformImageView {
                 compressFormat, compressQuality,
                 getImageInputPath(), getImageOutputPath(), getExifInfo());
 
-        new BitmapCropTask(getViewBitmap(), imageState, cropParameters, cropCallback)
+        cropParameters.setContentImageInputUri(getImageInputUri());
+        cropParameters.setContentImageOutputUri(getImageOutputUri());
+
+        new BitmapCropTask(getContext(), getViewBitmap(), imageState, cropParameters, cropCallback)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

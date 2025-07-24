@@ -1,7 +1,5 @@
 # uCrop - Image Cropping Library for Android
 
-
-
 #### This project aims to provide an ultimate and flexible image cropping experience. Made in [Yalantis](https://yalantis.com/?utm_source=github)
 
 #### [How We Created uCrop](https://yalantis.com/blog/how-we-created-ucrop-our-own-image-cropping-library-for-android/)
@@ -20,14 +18,15 @@
 	```
 	allprojects {
 	   repositories {
+	      ...
 	      maven { url "https://jitpack.io" }
 	   }
 	}
 	```
 
-    ``` implementation 'com.github.check24-profis:uCrop:2.2.9' ``` - lightweight general solution
+    ``` implementation 'com.github.yalantis:ucrop:2.2.10' ``` - lightweight general solution
 
-    ``` implementation 'com.github.check24-profis:uCrop:2.2.9-native' ``` - get power of the native code to preserve image quality (+ about 1.5 MB to an apk size)
+    ``` implementation 'com.github.yalantis:ucrop:2.2.9-native' ``` - get power of the native code to preserve image quality (+ about 1.5 MB to an apk size)
 
 2. Add UCropActivity into your AndroidManifest.xml
 
@@ -38,27 +37,27 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     ```
 
-3. The uCrop configuration is created using the builder pattern.
+3. Register a callback for the uCrop result.
+
+    ```java
+    private ActivityResultLauncher<Intent> activityResultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    final Uri resultUri = UCrop.getOutput(result.getData());
+                } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+                    final Throwable cropError = UCrop.getError(result.getData());
+                }
+            });
+    ```
+
+4. Create the uCrop configuration using the builder pattern.
 
    ```java
    UCrop.of(sourceUri, destinationUri)
        .withAspectRatio(16, 9)
        .withMaxResultSize(maxWidth, maxHeight)
-       .start(context);
+       .start(context, activityResultLauncher);
    ```
-
-4. Override `onActivityResult` method and handle uCrop result.
-
-    ```java
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            final Uri resultUri = UCrop.getOutput(data);
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            final Throwable cropError = UCrop.getError(data);
-        }
-    }
-    ```
 
 5. You may want to add this to your PROGUARD config:
 
@@ -85,6 +84,12 @@ Currently, you can change:
    * choose whether you want rectangle or oval(`options.setCircleDimmedLayer(true)`) crop area
    * the UI colors (Toolbar, StatusBar, active widget state)
    * and more...
+   
+Since version 2.2.7 in case if you need to change transport protocol, setup timeout etc. You may set your `OkHttpClient` next way:
+
+    ```java
+    new UCropInitializer().setOkHttpClient(client);
+    ``` 
 
 # Compatibility
 
@@ -112,21 +117,6 @@ Currently, you can change:
 *   Add localizations
 *   Fixed [#609](https://github.com/Yalantis/uCrop/issues/609)
 *   Fixed [#794](https://github.com/Yalantis/uCrop/issues/794)
-
-
-### Version: 2.2.5
-
-*   Fixed [#584](https://github.com/Yalantis/uCrop/issues/584)
-*   Fixed [#598](https://github.com/Yalantis/uCrop/issues/598)
-*   Fixed [#543](https://github.com/Yalantis/uCrop/issues/543)
-*   Fixed [#602](https://github.com/Yalantis/uCrop/issues/602)
-*   And other improvements
-
-### Version: 2.2.4
-
-  * **AndroidX migration**
-  * Redesign
-  * Several fixes including [#550](https://github.com/Yalantis/uCrop/issues/550)
 
 ### Version: 2.2.3
 
@@ -213,9 +203,6 @@ We’d be really happy if you sent us links to your projects where you use our c
 
     Copyright 2017, Yalantis
 
-    Software doesn't collect, store or transfer data to Yalantis or third parties.
-    Emplacement of this Software is carried out locally at device.
-
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -227,9 +214,3 @@ We’d be really happy if you sent us links to your projects where you use our c
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-#### Update gradle wrapper to latest version
-
-```shell
-./gradlew wrapper --gradle-version latest
-```

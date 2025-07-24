@@ -18,16 +18,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.yalantis.ucrop.view.UCropView;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
-import java.util.Calendar;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -35,6 +28,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
+
+import com.yalantis.ucrop.util.BitmapLoadUtils;
+import com.yalantis.ucrop.view.UCropView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.FileChannel;
+import java.util.Calendar;
+import java.util.List;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
@@ -59,6 +65,8 @@ public class ResultActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         Uri uri = getIntent().getData();
+        int width = 0;
+        int height = 0;
         if (uri != null) {
             try {
                 UCropView uCropView = findViewById(R.id.ucrop);
@@ -66,20 +74,49 @@ public class ResultActivity extends BaseActivity {
                 uCropView.getOverlayView().setShowCropFrame(false);
                 uCropView.getOverlayView().setShowCropGrid(false);
                 uCropView.getOverlayView().setDimmedColor(Color.TRANSPARENT);
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && "content".equals(uri.getScheme())) {
+                    TextView textViewExifWarning = findViewById(R.id.text_view_content_warning);
+                    textViewExifWarning.setVisibility(View.VISIBLE);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "setImageUri", e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            if ("content".equals(uri.getScheme())) {
+                InputStream is = null;
+                try {
+                    is = getContentResolver().openInputStream(uri);
+                    BitmapFactory.decodeStream(is, null, options);
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, e.getMessage(), e);
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, e.getMessage(), e);
+                        }
+                    }
+                }
+            } else {
+                File file = new File(getIntent().getData().getPath());
+                BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            }
+
+            width = options.outWidth;
+            height = options.outHeight;
         }
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(new File(getIntent().getData().getPath()).getAbsolutePath(), options);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.format_crop_result_d_d, options.outWidth, options.outHeight));
+            actionBar.setTitle(getString(R.string.format_crop_result_d_d, width, height));
         }
     }
 
@@ -131,6 +168,9 @@ public class ResultActivity extends BaseActivity {
                     Toast.makeText(ResultActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, imageUri.toString(), e);
                 }
+            } else if (BitmapLoadUtils.hasContentScheme(imageUri)){
+                Toast.makeText(ResultActivity.this, getString(R.string.toast_already_saved), Toast.LENGTH_SHORT).show();
+                finish();
             } else {
                 Toast.makeText(ResultActivity.this, getString(R.string.toast_unexpected_error), Toast.LENGTH_SHORT).show();
             }
