@@ -302,9 +302,6 @@ public class UCropFragment extends Fragment {
 
     };
 
-    /**
-     * Use {@link #mActiveControlsWidgetColor} for color filter
-     */
     private void setupStatesWrapper(View view) {
         ImageView stateScaleImageView = view.findViewById(R.id.image_view_state_scale);
         ImageView stateRotateImageView = view.findViewById(R.id.image_view_state_rotate);

@@ -24,6 +24,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.yalantis.ucrop.model.AspectRatio;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
  * <p/>
@@ -272,6 +278,8 @@ public class UCrop {
 
         public static final String EXTRA_TOOL_BAR_COLOR = EXTRA_PREFIX + ".ToolbarColor";
         public static final String EXTRA_STATUS_BAR_COLOR = EXTRA_PREFIX + ".StatusBarColor";
+        public static final String EXTRA_STATUS_BAR_LIGHT = EXTRA_PREFIX + ".StatusBarLight";
+        public static final String EXTRA_NAVIGATION_BAR_LIGHT = EXTRA_PREFIX + ".NavigationBarLight";
         public static final String EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE = EXTRA_PREFIX + ".UcropColorControlsWidgetActive";
 
         public static final String EXTRA_UCROP_WIDGET_COLOR_TOOLBAR = EXTRA_PREFIX + ".UcropToolbarWidgetColor";
@@ -429,10 +437,17 @@ public class UCrop {
         }
 
         /**
-         * @param color - desired resolved color of the statusbar
+         * @param light true for light status bar (dark icons), false for dark status bar (light icons)
          */
-        public void setStatusBarColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
+        public void setStatusBarLight(boolean light) {
+            mOptionBundle.putBoolean(EXTRA_STATUS_BAR_LIGHT, light);
+        }
+
+        /**
+         * @param light true for light navigation bar (dark icons), false for dark navigation bar (light icons)
+         */
+        public void setNavigationBarLight(boolean light) {
+            mOptionBundle.putBoolean(EXTRA_NAVIGATION_BAR_LIGHT, light);
         }
 
         /**
