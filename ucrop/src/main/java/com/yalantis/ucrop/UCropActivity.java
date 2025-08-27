@@ -89,7 +89,6 @@ public class UCropActivity extends AppCompatActivity {
 
     // Enables dynamic coloring
     private int mToolbarColor;
-    private int mStatusBarColor;
     private int mActiveControlsWidgetColor;
     private int mToolbarWidgetColor;
     @ColorInt
@@ -128,8 +127,8 @@ public class UCropActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
 
-        setupSystemBars(intent);
         setContentView(R.layout.ucrop_activity_photobox);
+        setupSystemBars(intent);
         setupViews(intent);
         setImageData(intent);
         setInitialState();

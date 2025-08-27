@@ -1,11 +1,9 @@
 package com.yalantis.ucrop.sample;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
@@ -20,8 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -35,7 +31,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
-import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -56,16 +51,6 @@ import com.yalantis.ucrop.UCropFragmentCallback;
 import java.io.File;
 import java.util.Locale;
 import java.util.Random;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -208,8 +193,8 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         public void onClick(View v) {
             if (mRadioGroupChooseDestination.getCheckedRadioButtonId() == R.id.radio_choose_destination && destinationUri == null) {
                 Toast.makeText(SampleActivity.this,
-                               "Please, select a destination file or set Tmp Files destination option",
-                               Toast.LENGTH_LONG).show();
+                        "Please, select a destination file or set Tmp Files destination option",
+                        Toast.LENGTH_LONG).show();
             } else {
                 onValidatedClick(v);
             }
@@ -235,7 +220,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                     break;
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
                 if (mCheckBoxUseDocumentProvider.isChecked()) {
 
@@ -249,14 +234,14 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                         startActivityForResult(createDocumentIntent, DESTINATION_IMAGE_FILE_REQUEST_CODE);
                     } else {
                         Toast.makeText(SampleActivity.this,
-                                       R.string.no_file_chooser_error,
-                                       Toast.LENGTH_LONG).show();
+                                R.string.no_file_chooser_error,
+                                Toast.LENGTH_LONG).show();
                     }
-                } else if(ActivityCompat.checkSelfPermission(SampleActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                } else if (ActivityCompat.checkSelfPermission(SampleActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
                     requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                      getString(R.string.permission_write_storage_rationale),
-                                      REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
+                            getString(R.string.permission_write_storage_rationale),
+                            REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
                 } else {
                     showChooseFileDestinationAlertDialog();
                 }
@@ -264,8 +249,8 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                     && ActivityCompat.checkSelfPermission(SampleActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                  getString(R.string.permission_write_storage_rationale),
-                                  REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
+                        getString(R.string.permission_write_storage_rationale),
+                        REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
             } else {
                 showChooseFileDestinationAlertDialog();
             }
@@ -417,8 +402,8 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                 File file = new File(directory, fileName);
                 if (mCheckBoxUseFileProvider.isChecked()) {
                     destinationUri = FileProvider.getUriForFile(SampleActivity.this,
-                                                                getString(R.string.file_provider_authorities),
-                                                                file);
+                            getString(R.string.file_provider_authorities),
+                            file);
                 } else {
                     destinationUri = Uri.fromFile(file);
                 }
@@ -438,7 +423,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
         EditText editTextFilename = dialog.findViewById(R.id.edit_text_file_name);
-        if(editTextFilename != null) {
+        if (editTextFilename != null) {
             editTextFilename.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -728,22 +713,6 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-        }
-    }
-
-    /**
-     * Sets status-bar color for L devices.
-     *
-     * @param color - status-bar color
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setStatusBarColor(@ColorInt int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(color);
-            }
         }
     }
 
